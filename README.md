@@ -86,12 +86,14 @@ The orchestrator ships with two interchangeable routers:
 - **`router="keyword"`** (default) — deterministic, no API key required, used for the reproducible Kaggle demo and the eval harness.
 - **`router="llm"`** — a real Gemini call (`src/routing_llm.py`, via the `google-genai` SDK) decides which skill should handle the request, which is the realistic ADK-style pattern. Set `GEMINI_API_KEY` (or `GOOGLE_API_KEY`) and pass `router="llm"` when constructing `HomeBaseOrchestrator`. If no key is configured, the package isn't installed, or the call fails for any reason, it **automatically falls back to keyword routing** and logs why — so a notebook using the LLM router still runs end-to-end on a fresh kernel with no key set.
 
-**Setting the key locally (outside Kaggle):** copy `.env.example` to `.env` in the project root (same folder as this README) and fill in your real key:
+**Setting up keys & OAuth locally (outside Kaggle):** copy `.env.example` to `.env` in the project root and fill in your real keys:
 
 ```
 cp .env.example .env
 # then edit .env:
-GEMINI_API_KEY=your-real-key-here
+GEMINI_API_KEY=your-gemini-key-here
+GOOGLE_CLIENT_ID=your-oauth-client-id
+GOOGLE_CLIENT_SECRET=your-oauth-client-secret
 ```
 
 `src/routing_llm.py` auto-loads `.env` via `python-dotenv` if it's installed (`pip install python-dotenv`). The `.gitignore` already excludes `.env` so the real key is never committed — only `.env.example` (a safe placeholder) is tracked.
@@ -183,4 +185,10 @@ The notebook includes a runnable mini-harness for the first three dimensions usi
 
 ## 8. What's mocked vs. real
 
-To keep this reproducible on Kaggle without API keys or OAuth setup, the MCP servers are **local stand-ins** that follow the same call/response shape a real MCP tool call would use (name, arguments, permission tier, structured result). Swapping in real `google-adk` orchestration and live MCP servers (Google Calendar API, Gmail API) is a drop-in replacement — the orchestrator, skills, and security layer don't need to change, only the MCP server implementations.
+**Phase 1 Upgrade Complete:** All 4 MCP servers have been upgraded to use real API integrations:
+- **Calendar MCP**: Real Google Calendar API (OAuth 2.0).
+- **Email MCP**: Real Gmail API (OAuth 2.0) — restricted strictly to `gmail.compose` (drafts only).
+- **Tasks MCP**: Real Google Tasks API (OAuth 2.0) + local SQLite for expense tracking.
+- **Weather MCP**: Real Open-Meteo API (Free, no API key).
+
+To keep this reproducible on Kaggle without API keys or OAuth setup, the system supports a mock fallback mode. By setting `HOMEBASE_MOCK=1` in your environment (or if OAuth is simply not configured), the MCP servers will fall back to using local stand-in data that follows the exact same call/response shape.
