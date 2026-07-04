@@ -1,0 +1,7 @@
+# Core demo runs with zero external dependencies — the ADK orchestrator and
+# MCP servers are locally-mocked to keep this reproducible on a fresh
+# Kaggle kernel without API keys.
+#
+# Optional upgrade: real LLM-based routing (see src/routing_llm.py)
+google-genai>=1.0.0   # only needed if using router="llm" with a GEMINI_API_KEY
+python-dotenv>=1.0.0  # optional: auto-loads GEMINI_API_KEY from a local .env file (not needed on Kaggle — use Secrets there)
