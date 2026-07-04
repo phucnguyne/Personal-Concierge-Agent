@@ -5,3 +5,17 @@
 # Optional upgrade: real LLM-based routing (see src/routing_llm.py)
 google-genai>=1.0.0   # only needed if using router="llm" with a GEMINI_API_KEY
 python-dotenv>=1.0.0  # optional: auto-loads GEMINI_API_KEY from a local .env file (not needed on Kaggle — use Secrets there)
+
+# --- Phase 1: Real MCP server integrations ---
+# HTTP client with retry support
+httpx>=0.27.0
+tenacity>=8.0.0
+
+# Google APIs (Calendar, Gmail, Tasks) via OAuth 2.0
+google-api-python-client>=2.100.0
+google-auth-oauthlib>=1.2.0
+google-auth-httplib2>=0.2.0
+
+# --- Dev / Test dependencies ---
+pytest>=8.0.0
+respx>=0.21.0          # mock httpx requests in tests

@@ -4,3 +4,11 @@ __pycache__/
 .ipynb_checkpoints/
 
 venv/
+
+homebase_production_prompt_en.md
+
+# Phase 1: OAuth & data files
+.google_token.json
+credentials.json
+data/
+*.db
